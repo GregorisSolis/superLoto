@@ -9,6 +9,8 @@ import java.sql.*;
 import clases.ConexionLoto;
 import java.awt.Image;
 import java.awt.Toolkit;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -16,7 +18,7 @@ import javax.swing.JOptionPane;
  * @author Juegos
  */
 public class Login extends javax.swing.JFrame {
-    
+
     public static String user = "";
     String pass = "";
 
@@ -25,16 +27,20 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-        setSize(300, 400);
+        setSize(300, 420);
         setResizable(false);
         setTitle("Acceso al sistema");
         setLocationRelativeTo(null);
-        
-        
+
+        ImageIcon wallpaperLogo = new ImageIcon("src/img/carrito.png");
+        Icon iconoLogo = new ImageIcon(wallpaperLogo.getImage().getScaledInstance(jLabel_wallpaper.getWidth(),
+                jLabel_wallpaper.getHeight(), Image.SCALE_DEFAULT));
+        jLabel_wallpaper.setIcon(iconoLogo);
+        this.repaint();
     }
-    
-        @Override
-    public Image getIconImage(){
+
+    @Override
+    public Image getIconImage() {
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("img/carrito.png"));
         return retValue;
     }
@@ -51,8 +57,10 @@ public class Login extends javax.swing.JFrame {
         jButton_init = new javax.swing.JButton();
         txt_pass = new javax.swing.JPasswordField();
         txt_user = new javax.swing.JTextField();
+        jLabel_wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 51, 51));
         setIconImage(getIconImage());
 
         jButton_init.setText("Iniciar Sesión");
@@ -70,74 +78,81 @@ public class Login extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton_init, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_user, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(56, 56, 56))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_user, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_init, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel_wallpaper, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(278, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_wallpaper, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
                 .addComponent(txt_user, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addComponent(jButton_init, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_initActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_initActionPerformed
-        
-            user = txt_user.getText().trim();
-            pass = txt_pass.getText().trim();
-            
-            if (!user.equals("") || !pass.equals("")) {
-                
-                try {
-                    
-                    Connection cn = ConexionLoto.Conectar();
-                   PreparedStatement pst = cn.prepareStatement(
-                           "select cargo from funcionarios where nombre_user = '" + user
-                   + "' and password = '" + pass + "'");
-                   
-                   ResultSet rs = pst.executeQuery();
-                   
-                    if (rs.next()) {
-                        
-                        String cargo = rs.getString("cargo");
-                        
-                        if (cargo.equals("Administrador")) {
-                            
-                            dispose();
-                            new Administrador().setVisible(true);
-                        
-                        }
-                        if(cargo.equals("Cajera")) {
-                            dispose();
-                            new Cajera().setVisible(true);
-                        }
-                        
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Datos incorrecto. Intente nuevamente.");
-                        txt_user.setText("");
-                        txt_pass.setText("");
+
+        user = txt_user.getText().trim();
+        pass = txt_pass.getText().trim();
+
+        if (!user.equals("") || !pass.equals("")) {
+
+            try {
+
+                Connection cn = ConexionLoto.Conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                        "select cargo from funcionarios where nombre_user = '" + user
+                        + "' and password = '" + pass + "'");
+
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+
+                    String cargo = rs.getString("cargo");
+
+                    if (cargo.equals("Administrador")) {
+
+                        dispose();
+                        new Administrador().setVisible(true);
+
                     }
-                    
-                } catch (SQLException e) {
-                    System.err.println("Error en el boton acceder. " + e);
-                    JOptionPane.showMessageDialog(null, "Error al iniciar sesión.");
+                    if (cargo.equals("Cajera")) {
+                        dispose();
+                        new Cajera().setVisible(true);
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Datos incorrecto. Intente nuevamente.");
+                    txt_user.setText("");
+                    txt_pass.setText("");
                 }
-                
-            } else {
-                JOptionPane.showMessageDialog(null, "Debes llenar todos los campos!");
+
+            } catch (SQLException e) {
+                System.err.println("Error en el boton acceder. " + e);
+                JOptionPane.showMessageDialog(null, "Error al iniciar sesión.");
             }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos!");
+        }
     }//GEN-LAST:event_jButton_initActionPerformed
 
     /**
@@ -177,6 +192,7 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_init;
+    private javax.swing.JLabel jLabel_wallpaper;
     private javax.swing.JPasswordField txt_pass;
     private javax.swing.JTextField txt_user;
     // End of variables declaration//GEN-END:variables

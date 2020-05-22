@@ -11,26 +11,26 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author Juegos
  */
 public class Cajera extends javax.swing.JFrame {
 
-    String nombre_producto, codigo_producto, descripcion_producto,
-            user;
-    int precio;
-   public double precioDeCompra = 0, totalDeCompra = 0;
+    String nombre_producto, codigo_producto, descripcion_producto, compraTotal, dia, mes, annio,user;
+    int precio, mesConver = 0;
+    public double precioDeCompra = 0, totalDeCompra = 0;
 
     DefaultTableModel model = new DefaultTableModel();
-
+    DecimalFormat df = new DecimalFormat("#.00");
+    
     public Cajera() {
         initComponents();
         user = Login.user;
@@ -38,6 +38,8 @@ public class Cajera extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Vista cajera - sesión de " + user);
         setLocationRelativeTo(null);
+        jLabel_nombreOperador.setText("Operador: " + user);
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         jTable_listaDeCompra = new JTable(model);
@@ -47,6 +49,17 @@ public class Cajera extends javax.swing.JFrame {
         model.addColumn("Codigo");
         model.addColumn("Descripcion");
         model.addColumn("Precio");
+
+        Calendar calendar = Calendar.getInstance();
+
+        dia = Integer.toString(calendar.get(Calendar.DATE));
+        mes = Integer.toString(calendar.get(Calendar.MONTH));
+        annio = Integer.toString(calendar.get(Calendar.YEAR));
+
+        mesConver = 1 + Integer.parseInt(mes);
+
+        jLabel_Data.setText("Data: " + dia + "/" + mesConver + "/" + annio);
+
     }
 
     @Override
@@ -77,6 +90,9 @@ public class Cajera extends javax.swing.JFrame {
         jLabel_totalDeCompra = new javax.swing.JLabel();
         jButton_finalizar_imprimir = new javax.swing.JButton();
         jButton_reiniciar_commpra = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel_nombreOperador = new javax.swing.JLabel();
+        jLabel_Data = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(getIconImage());
@@ -136,6 +152,14 @@ public class Cajera extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("Operador:");
+
+        jLabel_nombreOperador.setFont(new java.awt.Font("Tahoma", 1, 22)); // NOI18N
+        jLabel_nombreOperador.setText("Funcionario");
+
+        jLabel_Data.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        jLabel_Data.setText("Data:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -150,7 +174,10 @@ public class Cajera extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(txt_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel_totalDeCompra)))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel_totalDeCompra)
+                            .addComponent(jLabel_nombreOperador)
+                            .addComponent(jLabel_Data)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,11 +186,11 @@ public class Cajera extends javax.swing.JFrame {
                             .addComponent(jLabel4))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton_reiniciar_commpra)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton_finalizar_imprimir)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton_finalizar_imprimir))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,11 +198,11 @@ public class Cajera extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
@@ -185,15 +212,21 @@ public class Cajera extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_totalDeCompra)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5))
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_nombreOperador))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_totalDeCompra)
                     .addComponent(jButton_reiniciar_commpra)
-                    .addComponent(jButton_finalizar_imprimir))
-                .addGap(56, 56, 56))
+                    .addComponent(jButton_finalizar_imprimir)
+                    .addComponent(jLabel_Data))
+                .addGap(52, 52, 52))
         );
 
         pack();
@@ -201,7 +234,6 @@ public class Cajera extends javax.swing.JFrame {
 
     private void txt_codigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_codigoActionPerformed
         JTextField writingTextField = new JTextField();
-
         codigo_producto = txt_codigo.getText().trim();
 
         try {
@@ -218,7 +250,9 @@ public class Cajera extends javax.swing.JFrame {
                 Object[] fila = new Object[4];
                 for (int i = 0; i < 4; i++) {
                     fila[i] = rs.getObject(i + 1);
+                    
                 }
+                
                 model.addRow(fila);
 
                 txt_nombre.setText(rs.getString("nombre_producto"));
@@ -229,7 +263,7 @@ public class Cajera extends javax.swing.JFrame {
 
                 totalDeCompra = totalDeCompra + precioDeCompra;
 
-                jLabel_totalDeCompra.setText("R$ " + totalDeCompra);
+                jLabel_totalDeCompra.setText("R$ " + df.format(totalDeCompra));
 
             } else {
                 JOptionPane.showMessageDialog(null, "Producto no registrado!");
@@ -252,9 +286,32 @@ public class Cajera extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_codigoActionPerformed
 
     private void jButton_finalizar_imprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_finalizar_imprimirActionPerformed
-        JOptionPane.showMessageDialog(null, "Compra Efectuada!");
-        new Cajera().setVisible(true);
-         this.dispose();
+
+        df.format(totalDeCompra);
+        try {
+
+            Connection cn = ConexionLoto.Conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                    "insert into factura values  (?,?,?,?,?,?)");
+
+            pst.setInt(1, 0);
+            pst.setString(2, user);
+            pst.setDouble(3, totalDeCompra);
+            pst.setString(4, dia);
+            pst.setString(5, mes);
+            pst.setString(6, annio);
+
+            pst.executeUpdate();
+            cn.close();
+
+            JOptionPane.showMessageDialog(null, "Compra Efectuada!");
+            new Cajera().setVisible(true);
+            this.dispose();
+
+        } catch (SQLException e) {
+            System.err.println("No se pudo mandar la factura a BD. " + e);
+        }
+
     }//GEN-LAST:event_jButton_finalizar_imprimirActionPerformed
 
     private void jButton_reiniciar_commpraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_reiniciar_commpraActionPerformed
@@ -305,6 +362,9 @@ public class Cajera extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel_Data;
+    private javax.swing.JLabel jLabel_nombreOperador;
     private javax.swing.JLabel jLabel_totalDeCompra;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable_listaDeCompra;
